@@ -1,0 +1,41 @@
+
+services:
+  database:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgresData:/var/lib/postgresql
+    networks:
+      - RP-pratica
+    
+  backend:
+    build:
+      context: .
+      target: backend
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_HOST: database
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+    ports:
+      - 3000:3000
+    networks:
+      - RP-pratica
+
+  frontend:
+    build: 
+      context: .
+      target: frontend
+    ports:
+      - 5757:5757
+    networks:
+      - RP-pratica
+
+volumes:
+  postgresData:
+networks:
+  RP-pratica:
